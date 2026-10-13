@@ -232,6 +232,53 @@ After running `main.py`, the following files are produced in the `outputs/` fold
 
 ---
 
+## 🌐 Cloud Deployment Guide
+
+### Why Vercel Fails for Streamlit Applications
+If you attempted to deploy this repository on **Vercel** and received the error:
+```text
+Found app.py, main.py but none export a top-level "app", "application", or "handler" variable.
+```
+**Reason:** Vercel's Python runtime (`@vercel/python`) is exclusively designed for **stateless WSGI/ASGI serverless functions** (such as Flask or FastAPI). Streamlit is a **stateful, long-running application** that maintains continuous in-memory session states and persistent **WebSockets** between the browser and server. Serverless function runtimes cannot maintain persistent WebSockets or long-running Python processes.
+
+---
+
+### Option 1: Streamlit Community Cloud (Recommended — 100% Free & Native)
+
+Streamlit Community Cloud is the official hosting platform for Streamlit applications. It deploys directly from your GitHub repository in 1 click:
+
+1. Push your repository to GitHub:
+   ```powershell
+   git add .
+   git commit -m "Configure Streamlit Cloud and Render deployment"
+   git push origin main
+   ```
+2. Visit **[share.streamlit.io](https://share.streamlit.io)** and sign in with your GitHub account.
+3. Click **"New app"** (or **"Create app"**).
+4. Fill in the deployment form:
+   - **Repository:** `Tithi2515/association-rule-mining-for-drug-prescription-pattern`
+   - **Branch:** `main`
+   - **Main file path:** `app.py`
+5. Click **"Deploy!"**
+   - Streamlit Cloud automatically detects `requirements.txt` and `.streamlit/config.toml`, installs dependencies, and serves your live web application with a permanent public URL (e.g. `https://your-app.streamlit.app`).
+
+---
+
+### Option 2: Render (Free Cloud Web Service)
+
+This repository includes pre-configured [Procfile](file:///c:/Users/Tithi/OneDrive/Desktop/PDS-DM%20Project/Procfile) and [render.yaml](file:///c:/Users/Tithi/OneDrive/Desktop/PDS-DM%20Project/render.yaml) for 1-click web service hosting:
+
+1. Sign up at **[render.com](https://render.com)**.
+2. Click **"New +"** > **"Web Service"**.
+3. Connect your GitHub repository `association-rule-mining-for-drug-prescription-pattern`.
+4. Configure settings:
+   - **Runtime:** `Python 3`
+   - **Build Command:** `pip install -r requirements.txt`
+   - **Start Command:** `streamlit run app.py --server.port $PORT --server.address 0.0.0.0`
+5. Click **"Create Web Service"**.
+
+---
+
 ## 🛠️ Troubleshooting & Common Fixes
 
 ### 1. `ModuleNotFoundError: No module named 'mlxtend'` or `'streamlit'`
