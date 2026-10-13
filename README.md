@@ -243,8 +243,16 @@ Found app.py, main.py but none export a top-level "app", "application", or "hand
 #### Technical Root Cause:
 1. **Serverless vs. Stateful Process:** Vercel's Python runtime (`@vercel/python`) is exclusively designed for **stateless WSGI / ASGI serverless functions** (such as Flask `app = Flask(__name__)` or FastAPI `app = FastAPI()`). It scans for a WSGI/ASGI variable named `app`, `application`, or `handler` to route individual HTTP requests.
 2. **WebSocket & Session Requirements:** Streamlit is an interactive, **stateful, long-running application** that maintains continuous in-memory sessions and bi-directional **WebSockets** between the browser client and Python server. Serverless lambdas terminate after each request, cannot maintain WebSocket connections, and cannot run long-lived processes.
-3. **Preserving Streamlit UI:** Do **not** rewrite the application in Flask or FastAPI just to satisfy Vercel. Converting it would break the reactive sliders, interactive dataframes, tabbed layouts, dual algorithm audits, and dynamic Matplotlib chart generation.
+3. **Preserving Streamlit UI:** Do **not** rewrite the application in Flask or FastAPI just to satisfy Vercel, and do **not** add dummy `app` or `handler` variables. Converting it would break the reactive sliders, interactive dataframes, tabbed layouts, dual algorithm audits, and dynamic Matplotlib chart generation.
 4. **Handling `vercel.json`:** If a `vercel.json` file was created locally or during prior deployment attempts, **delete it**. Having `vercel.json` signals Vercel to build the project as a serverless function, which will repeatedly fail for Streamlit.
+
+#### How to Stop Vercel from Triggering Failing Builds on Push:
+Because your GitHub repository is currently connected to a project on your Vercel account, Vercel automatically launches a new build every time you push commits to GitHub:
+1. Open your **[Vercel Dashboard](https://vercel.com)**.
+2. Select the project connected to `association-rule-mining-for-drug-prescription-pattern`.
+3. Navigate to **Settings** -> Scroll down to the bottom -> Click **Delete Project** (or under the **Git** section, click **Disconnect**).
+   *(Note: Deleting the project in Vercel does NOT delete any code or GitHub files; it simply halts Vercel from running incompatible serverless builds).*
+4. Deploy the repository on **Streamlit Community Cloud** instead using the steps below.
 
 ---
 
