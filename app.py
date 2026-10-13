@@ -218,14 +218,23 @@ st.markdown(
 )
 
 if not config.DATA_PATH.exists():
-    st.error(
-        f"**Dataset file missing!**\n\n"
-        f"Could not find `{config.DATA_PATH}`.\n\n"
-        f"Please download the CSV from [Connecticut Open Data]"
-        f"(https://data.ct.gov/api/views/rybz-nyjw/rows.csv?accessType=DOWNLOAD) "
-        f"and save it into the `data/` folder as `accidental_drug_deaths.csv`."
-    )
-    st.stop()
+    with st.spinner("Downloading Connecticut Open Data dataset (first run)..."):
+        try:
+            import urllib.request
+            config.DATA_PATH.parent.mkdir(parents=True, exist_ok=True)
+            url = "https://data.ct.gov/api/views/rybz-nyjw/rows.csv?accessType=DOWNLOAD"
+            urllib.request.urlretrieve(url, config.DATA_PATH)
+            st.success("Dataset successfully downloaded!")
+        except Exception as dl_e:
+            st.error(
+                f"**Dataset file missing and automatic download failed!**\n\n"
+                f"Could not find `{config.DATA_PATH}`.\n\n"
+                f"Error details: {dl_e}\n\n"
+                f"Please download the CSV from [Connecticut Open Data]"
+                f"(https://data.ct.gov/api/views/rybz-nyjw/rows.csv?accessType=DOWNLOAD) "
+                f"and save it into the `data/` folder as `accidental_drug_deaths.csv`."
+            )
+            st.stop()
 
 # Load and preprocess
 try:

@@ -36,14 +36,23 @@ def load_raw_data(filepath: Union[Path, str]) -> pd.DataFrame:
     path = Path(filepath)
 
     if not path.exists():
-        err_msg = (
-            f"\n[ERROR] Dataset not found at: {path.resolve()}\n"
-            f"Please ensure the CSV file is placed at:\n"
-            f"  {path}\n"
-            f"You can download it from Connecticut Open Data:\n"
-            f"  https://data.ct.gov/api/views/rybz-nyjw/rows.csv?accessType=DOWNLOAD"
-        )
-        raise FileNotFoundError(err_msg)
+        url = "https://data.ct.gov/api/views/rybz-nyjw/rows.csv?accessType=DOWNLOAD"
+        try:
+            import urllib.request
+            path.parent.mkdir(parents=True, exist_ok=True)
+            print(f"[INFO] Dataset not found at {path}. Automatically downloading from Connecticut Open Data...")
+            urllib.request.urlretrieve(url, path)
+            print(f"[SUCCESS] Downloaded dataset to {path}")
+        except Exception as dl_err:
+            err_msg = (
+                f"\n[ERROR] Dataset not found at: {path.resolve()}\n"
+                f"Automatic download attempt failed: {dl_err}\n"
+                f"Please ensure the CSV file is placed at:\n"
+                f"  {path}\n"
+                f"You can download it manually from Connecticut Open Data:\n"
+                f"  {url}"
+            )
+            raise FileNotFoundError(err_msg) from dl_err
 
     # Try common encodings to avoid decode failures on various Windows locales
     encodings = ["utf-8", "utf-8-sig", "latin-1"]
