@@ -235,42 +235,79 @@ After running `main.py`, the following files are produced in the `outputs/` fold
 ## 🌐 Cloud Deployment Guide
 
 ### Why Vercel Fails for Streamlit Applications
-If you attempted to deploy this repository on **Vercel** and received the error:
+When attempting to deploy this repository on **Vercel**, the deployment fails with:
 ```text
 Found app.py, main.py but none export a top-level "app", "application", or "handler" variable.
 ```
-**Reason:** Vercel's Python runtime (`@vercel/python`) is exclusively designed for **stateless WSGI/ASGI serverless functions** (such as Flask or FastAPI). Streamlit is a **stateful, long-running application** that maintains continuous in-memory session states and persistent **WebSockets** between the browser and server. Serverless function runtimes cannot maintain persistent WebSockets or long-running Python processes.
+
+#### Technical Root Cause:
+1. **Serverless vs. Stateful Process:** Vercel's Python runtime (`@vercel/python`) is exclusively designed for **stateless WSGI / ASGI serverless functions** (such as Flask `app = Flask(__name__)` or FastAPI `app = FastAPI()`). It scans for a WSGI/ASGI variable named `app`, `application`, or `handler` to route individual HTTP requests.
+2. **WebSocket & Session Requirements:** Streamlit is an interactive, **stateful, long-running application** that maintains continuous in-memory sessions and bi-directional **WebSockets** between the browser client and Python server. Serverless lambdas terminate after each request, cannot maintain WebSocket connections, and cannot run long-lived processes.
+3. **Preserving Streamlit UI:** Do **not** rewrite the application in Flask or FastAPI just to satisfy Vercel. Converting it would break the reactive sliders, interactive dataframes, tabbed layouts, dual algorithm audits, and dynamic Matplotlib chart generation.
+4. **Handling `vercel.json`:** If a `vercel.json` file was created locally or during prior deployment attempts, **delete it**. Having `vercel.json` signals Vercel to build the project as a serverless function, which will repeatedly fail for Streamlit.
 
 ---
 
 ### Option 1: Streamlit Community Cloud (Recommended — 100% Free & Native)
 
-Streamlit Community Cloud is the official hosting platform for Streamlit applications. It deploys directly from your GitHub repository in 1 click:
+Streamlit Community Cloud is the official, purpose-built hosting platform for Streamlit applications. It runs directly from your GitHub repository with persistent WebSockets and full UI interactivity.
 
-1. Push your repository to GitHub:
+#### Step-by-Step Deployment Instructions:
+1. **Push your latest code to GitHub:**
    ```powershell
    git add .
-   git commit -m "Configure Streamlit Cloud and Render deployment"
+   git commit -m "Update deployment configuration and documentation"
    git push origin main
    ```
-2. Visit **[share.streamlit.io](https://share.streamlit.io)** and sign in with your GitHub account.
-3. Click **"New app"** (or **"Create app"**).
-4. Fill in the deployment form:
-   - **Repository:** `Tithi2515/association-rule-mining-for-drug-prescription-pattern`
-   - **Branch:** `main`
-   - **Main file path:** `app.py`
-5. Click **"Deploy!"**
-   - Streamlit Cloud automatically detects `requirements.txt` and `.streamlit/config.toml`, installs dependencies, and serves your live web application with a permanent public URL (e.g. `https://your-app.streamlit.app`).
+
+2. **Sign in to Streamlit Community Cloud:**
+   - Go to **[share.streamlit.io](https://share.streamlit.io)**.
+   - Click **Sign in with GitHub** (ensure your account has access to `Tithi2515/association-rule-mining-for-drug-prescription-pattern`).
+
+3. **Create a New App:**
+   - Click the **"New app"** (or **"Create app"**) button.
+   - Fill in the repository details:
+     - **Repository:** `Tithi2515/association-rule-mining-for-drug-prescription-pattern`
+     - **Branch:** `main`
+     - **Main file path:** `app.py`
+     - **App URL:** (Choose a custom subdomain or keep default, e.g. `drug-prescription-pattern-mining.streamlit.app`)
+
+4. **Advanced Settings (Optional):**
+   - Click **Advanced settings**.
+   - **Python Version:** Select `3.10`, `3.11`, or `3.12`.
+   - **Secrets:** No API keys or secrets are required.
+
+5. **Deploy:**
+   - Click **"Deploy!"**.
+   - Streamlit Cloud will:
+     - Detect [requirements.txt](file:///c:/Users/Tithi/OneDrive/Desktop/PDS-DM%20Project/requirements.txt) and automatically install `pandas`, `numpy`, `mlxtend`, `matplotlib`, and `streamlit`.
+     - Read [.streamlit/config.toml](file:///c:/Users/Tithi/OneDrive/Desktop/PDS-DM%20Project/.streamlit/config.toml) to configure theme and headless server settings.
+     - Launch `streamlit run app.py` and assign a permanent HTTPS public URL.
+
+---
+
+### 📦 Dataset Storage & Cloud Availability Strategy
+
+- **Included in Repository:** The dataset `data/accidental_drug_deaths.csv` is ~4.87 MB, which is well within GitHub's 100 MB file size limit. It is tracked in Git, so Streamlit Community Cloud clones it directly upon build.
+- **Automated Fallback Downloader:** Both [app.py](file:///c:/Users/Tithi/OneDrive/Desktop/PDS-DM%20Project/app.py) and [src/data_loader.py](file:///c:/Users/Tithi/OneDrive/Desktop/PDS-DM%20Project/src/data_loader.py) contain an automatic download fallback. If the CSV is ever missing or excluded from git:
+  ```python
+  url = "https://data.ct.gov/api/views/rybz-nyjw/rows.csv?accessType=DOWNLOAD"
+  urllib.request.urlretrieve(url, config.DATA_PATH)
+  ```
+  On first boot, the app will automatically fetch the latest CSV directly from Connecticut Open Data and cache it in the `data/` folder.
+- **External Storage Alternative (For Larger Datasets):** If you decide to add larger datasets (>50 MB) and exclude them in `.gitignore`:
+  1. Upload the dataset to a public or presigned URL (e.g. GitHub Releases asset, AWS S3, or Google Cloud Storage).
+  2. Set a cloud environment variable `DATA_URL` and have `src/data_loader.py` pull from that URL at runtime.
 
 ---
 
 ### Option 2: Render (Free Cloud Web Service)
 
-This repository includes pre-configured [Procfile](file:///c:/Users/Tithi/OneDrive/Desktop/PDS-DM%20Project/Procfile) and [render.yaml](file:///c:/Users/Tithi/OneDrive/Desktop/PDS-DM%20Project/render.yaml) for 1-click web service hosting:
+This repository also includes pre-configured [Procfile](file:///c:/Users/Tithi/OneDrive/Desktop/PDS-DM%20Project/Procfile) and [render.yaml](file:///c:/Users/Tithi/OneDrive/Desktop/PDS-DM%20Project/render.yaml) for web service hosting on Render:
 
 1. Sign up at **[render.com](https://render.com)**.
 2. Click **"New +"** > **"Web Service"**.
-3. Connect your GitHub repository `association-rule-mining-for-drug-prescription-pattern`.
+3. Connect your GitHub repository `Tithi2515/association-rule-mining-for-drug-prescription-pattern`.
 4. Configure settings:
    - **Runtime:** `Python 3`
    - **Build Command:** `pip install -r requirements.txt`
