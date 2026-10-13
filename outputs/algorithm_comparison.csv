@@ -1,0 +1,5 @@
+Metric,Apriori,FP_Growth,Match
+Transactions,12812.0,12812.0,True
+Itemsets Count,51.0,51.0,True
+Rules Count,12.0,12.0,True
+Median Mining Time (s),0.00395,0.0266,N/A (Performance)

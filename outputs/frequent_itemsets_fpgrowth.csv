@@ -1,0 +1,52 @@
+support,itemsets,length
+0.687714642522635,Fentanyl,1
+0.40305963159537933,Cocaine,1
+0.28379644083671557,Heroin,1
+0.26014673743365596,Ethanol,1
+0.2272088666874805,Benzodiazepine,1
+0.11083359350608804,Xylazine,1
+0.09295972525757103,Methadone,1
+0.08351545426162972,Oxycodone,1
+0.07969091476740556,Fentanyl Analogue,1
+0.04331876365906962,Gabapentin,1
+0.03863565407430534,Amphet,1
+0.024196066187948798,Tramad,1
+0.2947236965344989,"Cocaine, Fentanyl",2
+0.1778020605682173,"Ethanol, Fentanyl",2
+0.16195753980643146,"Fentanyl, Heroin",2
+0.13698095535435528,"Benzodiazepine, Fentanyl",2
+0.11020917889478614,"Fentanyl, Xylazine",2
+0.09506712457071495,"Cocaine, Ethanol",2
+0.09202310334061817,"Cocaine, Heroin",2
+0.0787542928504527,"Fentanyl, Fentanyl Analogue",2
+0.07009054011863877,"Ethanol, Heroin",2
+0.06493911957539807,"Benzodiazepine, Heroin",2
+0.05885107711520449,"Benzodiazepine, Cocaine",2
+0.05377770839837652,"Cocaine, Xylazine",2
+0.0533093974399001,"Benzodiazepine, Ethanol",2
+0.048470184202310335,"Fentanyl, Methadone",2
+0.034811114580081175,"Benzodiazepine, Methadone",2
+0.03332812987823915,"Benzodiazepine, Oxycodone",2
+0.033093974399000935,"Fentanyl, Gabapentin",2
+0.033015922572588195,"Cocaine, Fentanyl Analogue",2
+0.0313768342179207,"Fentanyl, Oxycodone",2
+0.028020605682172964,"Fentanyl Analogue, Heroin",2
+0.02731813924445832,"Amphet, Fentanyl",2
+0.024976584452076178,"Cocaine, Methadone",2
+0.023571651576646892,"Benzodiazepine, Xylazine",2
+0.02325944427099594,"Ethanol, Xylazine",2
+0.021854511395566656,"Heroin, Methadone",2
+0.02123009678426475,"Ethanol, Oxycodone",2
+0.02052763034655011,"Ethanol, Fentanyl Analogue",2
+0.07297845769591009,"Cocaine, Ethanol, Fentanyl",3
+0.05760224789260069,"Cocaine, Fentanyl, Heroin",3
+0.05354355291913831,"Cocaine, Fentanyl, Xylazine",3
+0.04527005931938807,"Benzodiazepine, Cocaine, Fentanyl",3
+0.04152357165157665,"Ethanol, Fentanyl, Heroin",3
+0.04105526069310022,"Benzodiazepine, Fentanyl, Heroin",3
+0.03254761161411177,"Cocaine, Fentanyl, Fentanyl Analogue",3
+0.028020605682172964,"Fentanyl, Fentanyl Analogue, Heroin",3
+0.026381517327505464,"Benzodiazepine, Ethanol, Fentanyl",3
+0.023415547923821417,"Benzodiazepine, Fentanyl, Xylazine",3
+0.023025288791757727,"Ethanol, Fentanyl, Xylazine",3
+0.021073993131439275,"Cocaine, Ethanol, Heroin",3
